@@ -33,13 +33,13 @@ export default registerAs('app', (): AppConfig => {
   // App-specific port configuration
   let port: number;
   if (appName.includes('api-server') || appName === 'api-server') {
-    port = parseInt(process.env.API_SERVER_PORT || process.env.PORT || '3000', 10);
+    port = parseInt(process.env.API_SERVER_PORT || process.env.PORT || '3001', 10);
   } else if (appName.includes('websocket') || appName.includes('ws')) {
-    port = parseInt(process.env.WEBSOCKET_PORT || process.env.PORT || '3001', 10);
+    port = parseInt(process.env.WEBSOCKET_PORT || process.env.PORT || '3002', 10);
   } else if (appName.includes('admin')) {
-    port = parseInt(process.env.ADMIN_PORT || process.env.PORT || '3002', 10);
+    port = parseInt(process.env.ADMIN_PORT || process.env.PORT || '3003', 10);
   } else {
-    port = parseInt(process.env.PORT || '3000', 10);
+    port = parseInt(process.env.PORT || '5001', 10);
   }
 
   return {

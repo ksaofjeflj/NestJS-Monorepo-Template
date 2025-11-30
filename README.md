@@ -152,7 +152,11 @@ DATABASE_URI=mysql://user:pass@localhost:3306/mydb
 ```bash
 # Development
 npm run start:dev              # Start all apps in dev mode
-npm run start:dev api-server   # Start specific app
+npm run start:dev:all          # Start all apps at once (recommended)
+npm run start:dev:api          # Start API server only
+npm run start:dev:ws           # Start WebSocket service only
+npm run start:dev:admin        # Start admin panel only
+npm run start:dev:worker       # Start worker only
 
 # Build
 npm run build                  # Build all apps
@@ -200,6 +204,7 @@ See [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) for detailed guide and [POR
 ## 📖 Documentation
 
 - **[Quick Start Guide](./QUICK_START.md)** - Get started in 5 minutes
+- **[Running All Apps](./RUNNING_ALL_APPS.md)** - How to run all apps simultaneously
 - **[Architecture Overview](./ARCHITECTURE.md)** - Detailed architecture explanation
 - **[Database Switching Guide](./DATABASE_SWITCHING_GUIDE.md)** - How to switch databases
 - **[Port Configuration](./PORT_CONFIGURATION.md)** - How to configure ports for each app
