@@ -1,0 +1,215 @@
+# NestJS Monorepo Template
+
+A professional, production-ready NestJS monorepo template with flexible database abstraction, shared libraries, and best practices.
+
+## 🏗️ Architecture
+
+```
+nestjs-monorepo-template/
+├── apps/                          # Applications
+│   ├── api-server/               # Main REST API server (Port 3000)
+│   ├── worker/                   # Background worker service
+│   ├── websocket-service/        # WebSocket/real-time service (Port 3001)
+│   └── admin/                    # Admin panel (Port 3002)
+│
+├── libs/                         # Shared libraries
+│   ├── db/                       # Database abstraction layer
+│   ├── configuration/            # Configuration management
+│   └── common/                   # Common utilities & services
+│
+├── package.json                  # Root package.json
+├── tsconfig.json                 # TypeScript configuration
+├── nest-cli.json                 # NestJS CLI configuration
+└── README.md                     # This file
+```
+
+## ✨ Features
+
+- ✅ **Monorepo Architecture** - Multiple apps, shared libraries
+- ✅ **Database Abstraction** - Easy to switch between MongoDB, PostgreSQL, MySQL
+- ✅ **TypeScript** - Full type safety
+- ✅ **Configuration Management** - Environment-based config
+- ✅ **Shared Libraries** - Reusable code across apps
+- ✅ **Best Practices** - Production-ready patterns
+- ✅ **Scalable** - Easy to add new apps/services
+
+## 🚀 Quick Start
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Configure Environment
+
+```bash
+cp .env.example .env
+# Edit .env with your configuration
+```
+
+### 3. Start Development
+
+```bash
+# Start all apps
+npm run start:dev
+
+# Start specific app
+npm run start:dev api-server      # Port 3000
+npm run start:dev worker          # No port (background service)
+npm run start:dev websocket-service  # Port 3001
+npm run start:dev admin           # Port 3002
+```
+
+## 📦 Applications
+
+### **api-server**
+Main REST API server for handling HTTP requests.
+
+**Port:** 3000 (configurable)
+
+**Features:**
+- REST API endpoints
+- Authentication/Authorization
+- Request validation
+- Error handling
+
+### **worker**
+Background worker for processing jobs, queues, etc.
+
+**Port:** N/A (no HTTP server - runs in background)
+
+**Features:**
+- Scheduled tasks (cron jobs)
+- Queue processing
+- Background jobs
+- Daily cleanup tasks
+- Periodic health checks
+
+See [apps/worker/WORKER_EXAMPLES.md](./apps/worker/WORKER_EXAMPLES.md) for detailed examples.
+
+### **websocket-service**
+Real-time WebSocket service for live updates.
+
+**Port:** 3001 (configurable via `WEBSOCKET_PORT`)
+
+**Features:**
+- WebSocket connections
+- Real-time events
+- Room-based broadcasting
+
+### **admin**
+Admin panel for managing the application.
+
+**Port:** 3002 (configurable via `ADMIN_PORT`)
+
+**Features:**
+- Admin dashboard
+- User management
+- System configuration
+- Health monitoring
+
+## 📚 Shared Libraries
+
+### **libs/db** - Database Abstraction
+Switch between databases easily:
+- MongoDB (Mongoose)
+- PostgreSQL (TypeORM)
+- MySQL (TypeORM)
+
+### **libs/configuration** - Config Management
+Centralized configuration:
+- Environment variables
+- Type-safe config
+- Validation
+
+### **libs/common** - Common Utilities
+Reusable services:
+- Logging
+- Error handling
+- Utilities
+
+## 🔧 Database Configuration
+
+The template supports multiple databases. Switch easily by changing environment variables:
+
+```env
+# MongoDB
+DB_TYPE=mongodb
+DATABASE_URI=mongodb://localhost:27017/mydb
+
+# PostgreSQL
+DB_TYPE=postgresql
+DATABASE_URI=postgresql://user:pass@localhost:5432/mydb
+
+# MySQL
+DB_TYPE=mysql
+DATABASE_URI=mysql://user:pass@localhost:3306/mydb
+```
+
+## 📝 Available Scripts
+
+```bash
+# Development
+npm run start:dev              # Start all apps in dev mode
+npm run start:dev api-server   # Start specific app
+
+# Build
+npm run build                  # Build all apps
+npm run build api-server       # Build specific app
+
+# Test
+npm run test                   # Run all tests
+npm run test:watch             # Watch mode
+npm run test:cov               # Coverage
+
+# Lint
+npm run lint                   # Lint all code
+npm run lint:fix               # Fix linting issues
+```
+
+## 🎯 Usage
+
+1. **Clone/Copy this template**
+2. **Rename apps** to match your project
+3. **Configure database** in `.env`
+4. **Add your business logic**
+5. **Deploy!**
+
+## 🔌 Port Configuration
+
+Each app runs on its own port:
+
+| App | Default Port | Environment Variable |
+|-----|-------------|---------------------|
+| api-server | 3000 | `API_SERVER_PORT` |
+| websocket-service | 3001 | `WEBSOCKET_PORT` |
+| admin | 3002 | `ADMIN_PORT` |
+
+**⚠️ Important:** If you set `PORT=5001` for all apps, you'll get port conflicts! Always use app-specific ports.
+
+**Recommended `.env` setup:**
+```env
+API_SERVER_PORT=3000
+WEBSOCKET_PORT=3001
+ADMIN_PORT=3002
+```
+
+See [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) for detailed guide and [PORT_CONFLICT_WARNING.md](./PORT_CONFLICT_WARNING.md) for conflict prevention.
+
+## 📖 Documentation
+
+- **[Quick Start Guide](./QUICK_START.md)** - Get started in 5 minutes
+- **[Architecture Overview](./ARCHITECTURE.md)** - Detailed architecture explanation
+- **[Database Switching Guide](./DATABASE_SWITCHING_GUIDE.md)** - How to switch databases
+- **[Port Configuration](./PORT_CONFIGURATION.md)** - How to configure ports for each app
+- **[Template Features](./TEMPLATE_FEATURES.md)** - Complete feature list
+
+## 🔐 Environment Variables
+
+See `.env.example` for all required environment variables.
+
+## 📄 License
+
+MIT
+
