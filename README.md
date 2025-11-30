@@ -263,9 +263,9 @@ flowchart TB
     TypeORMModule --> PostgreSQL
     TypeORMModule --> MySQL
     
-    classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef db fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef database fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef app fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
+    classDef db fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
+    classDef database fill:#059669,color:#fff,stroke:#047857,stroke-width:2px
     
     class API,WS,Admin,Worker app
     class Factory,MongoModule,TypeORMModule db
@@ -347,8 +347,8 @@ flowchart LR
     WS_PORT --> P3002
     ADMIN_PORT --> P3003
     
-    classDef port fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
-    classDef env fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef port fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
+    classDef env fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
     
     class P3001,P3002,P3003,PNone port
     class API_PORT,WS_PORT,ADMIN_PORT env
@@ -375,13 +375,15 @@ flowchart TD
     JWTConfig --> JWTSecret[JWT Secret]
     JWTConfig --> JWTExpiry[JWT Expiry]
     
-    classDef env fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-    classDef config fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef db fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef env fill:#f59e0b,color:#fff,stroke:#d97706,stroke-width:2px
+    classDef config fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
+    classDef db fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
+    classDef connection fill:#059669,color:#fff,stroke:#047857,stroke-width:2px
     
     class ENV env
     class ConfigModule,DBConfig,AppConfig,JWTConfig config
-    class MongoDB,PostgreSQL,MySQL,PortConfig,CORSConfig,JWTSecret,JWTExpiry db
+    class PortConfig,CORSConfig,JWTSecret,JWTExpiry db
+    class MongoDB,PostgreSQL,MySQL connection
 ```
 
 ## 📝 How to View These Diagrams
@@ -866,6 +868,12 @@ All documentation is organized in the [`docs/`](./docs/) folder:
 ## 🔐 Environment Variables
 
 See `.env.example` for all required environment variables.
+
+## 👤 Author
+
+**Sagar Regmi**
+
+- LinkedIn: [sagar-regmi-60b377216](https://www.linkedin.com/in/sagar-regmi-60b377216/)
 
 ## 📄 License
 
