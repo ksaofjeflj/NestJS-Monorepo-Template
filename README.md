@@ -4,13 +4,63 @@ A professional, production-ready NestJS monorepo template with flexible database
 
 ## 🏗️ Architecture
 
+```mermaid
+flowchart TB
+    subgraph Root["📦 nestjs-monorepo-template/"]
+        direction TB
+        
+        subgraph Apps["📱 apps/ (Independent Services)"]
+            direction TB
+            API["api-server<br/>📍 Port 3001<br/>REST API • Validation"]
+            Worker["worker<br/>⚙️ Background Service<br/>Scheduled Tasks"]
+            WS["websocket-service<br/>📍 Port 3002<br/>Real-time • Socket.IO"]
+            Admin["admin<br/>📍 Port 3003<br/>Admin Panel"]
+        end
+        
+        subgraph Libs["📚 libs/ (Shared Libraries)"]
+            direction TB
+            DB["db/<br/>🗄️ Database Abstraction<br/>MongoDB ↔ PostgreSQL ↔ MySQL"]
+            Config["configuration/<br/>⚙️ Environment Config<br/>Type-safe • Validation"]
+            Common["common/<br/>🛠️ Utilities<br/>Logging • Errors • Filters"]
+        end
+    end
+
+    %% Dependencies
+    API -->|imports| DB
+    API -->|imports| Config
+    API -->|imports| Common
+    
+    Worker -->|imports| DB
+    Worker -->|imports| Config
+    Worker -->|imports| Common
+    
+    WS -->|imports| DB
+    WS -->|imports| Config
+    WS -->|imports| Common
+    
+    Admin -->|imports| DB
+    Admin -->|imports| Config
+    Admin -->|imports| Common
+
+    %% Styling
+    classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000,font-weight:bold
+    classDef lib fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
+    
+    class API,Worker,WS,Admin app
+    class DB,Config,Common lib
+```
+
+📊 **More Diagrams**: See [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) for detailed architecture diagrams.
+
+## 📁 Project Structure
+
 ```
 nestjs-monorepo-template/
 ├── apps/                          # Applications
-│   ├── api-server/               # Main REST API server (Port 3000)
+│   ├── api-server/               # Main REST API server (Port 3001)
 │   ├── worker/                   # Background worker service
-│   ├── websocket-service/        # WebSocket/real-time service (Port 3001)
-│   └── admin/                    # Admin panel (Port 3002)
+│   ├── websocket-service/        # WebSocket/real-time service (Port 3002)
+│   └── admin/                    # Admin panel (Port 3003)
 │
 ├── libs/                         # Shared libraries
 │   ├── db/                       # Database abstraction layer
@@ -22,6 +72,8 @@ nestjs-monorepo-template/
 ├── nest-cli.json                 # NestJS CLI configuration
 └── README.md                     # This file
 ```
+
+📊 **Visual Architecture Diagram**: See [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) for interactive diagrams.
 
 ## ✨ Features
 
@@ -205,6 +257,7 @@ See [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) for detailed guide and [POR
 
 - **[Quick Start Guide](./QUICK_START.md)** - Get started in 5 minutes
 - **[Running All Apps](./RUNNING_ALL_APPS.md)** - How to run all apps simultaneously
+- **[Architecture Diagrams](./ARCHITECTURE_DIAGRAM.md)** - Visual architecture diagrams
 - **[Architecture Overview](./ARCHITECTURE.md)** - Detailed architecture explanation
 - **[Database Switching Guide](./DATABASE_SWITCHING_GUIDE.md)** - How to switch databases
 - **[Port Configuration](./PORT_CONFIGURATION.md)** - How to configure ports for each app
