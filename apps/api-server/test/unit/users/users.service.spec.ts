@@ -11,8 +11,9 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    // Clear users array before each test for isolation
+    // Clear users array and reset counter before each test for isolation
     (service as any).users = [];
+    (service as any).idCounter = 0;
   });
 
   it('should be defined', () => {

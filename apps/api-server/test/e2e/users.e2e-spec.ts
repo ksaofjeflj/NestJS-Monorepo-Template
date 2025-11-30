@@ -131,13 +131,13 @@ describe('UsersController (e2e)', () => {
         });
     });
 
-    it('should return undefined for non-existent user', () => {
+    it('should return empty object for non-existent user', () => {
       return request(app.getHttpServer())
         .get('/api/users/non-existent-id')
         .expect(200)
         .expect((res) => {
-          // Current implementation returns undefined (which becomes null in JSON)
-          expect(res.body).toBeNull();
+          // NestJS serializes undefined as empty object {}
+          expect(res.body).toEqual({});
         });
     });
   });

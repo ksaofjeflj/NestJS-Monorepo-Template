@@ -3,11 +3,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class UsersService {
-  private users: any[] = []; // Replace with actual database model
+  private users: any[] = []; 
+  private idCounter = 0;
 
   create(createUserDto: CreateUserDto) {
     const user = {
-      id: Date.now().toString(),
+      id: `${Date.now()}-${++this.idCounter}`,
       ...createUserDto,
       createdAt: new Date(),
     };
