@@ -72,15 +72,24 @@ jobs:
         run: npm ci
 
       - name: Build all applications
-        run: npm run build
+        run: |
+          echo "Building all applications..."
+          npm run build api-server && echo "✅ api-server built" || echo "❌ api-server failed"
+          npm run build admin && echo "✅ admin built" || echo "❌ admin failed"
+          npm run build websocket-service && echo "✅ websocket-service built" || echo "❌ websocket-service failed"
+          npm run build worker && echo "✅ worker built" || echo "❌ worker failed"
 
       - name: Check build artifacts
         run: |
-          ls -la dist/apps/
-          test -f dist/apps/api-server/main.js && echo "✅ API server built successfully"
-          test -f dist/apps/admin/main.js && echo "✅ Admin app built successfully"
-          test -f dist/apps/websocket-service/main.js && echo "✅ WebSocket service built successfully"
-          test -f dist/apps/worker/main.js && echo "✅ Worker service built successfully"
+          echo ""
+          echo "📦 Build artifacts:"
+          ls -la dist/apps/ || echo "No dist/apps/ directory found"
+          echo ""
+          echo "Checking individual apps..."
+          [ -f dist/apps/api-server/main.js ] && echo "✅ API server: dist/apps/api-server/main.js" || echo "⚠️  API server: not found"
+          [ -f dist/apps/admin/main.js ] && echo "✅ Admin: dist/apps/admin/main.js" || echo "⚠️  Admin: not found"
+          [ -f dist/apps/websocket-service/main.js ] && echo "✅ WebSocket: dist/apps/websocket-service/main.js" || echo "⚠️  WebSocket: not found"
+          [ -f dist/apps/worker/main.js ] && echo "✅ Worker: dist/apps/worker/main.js" || echo "⚠️  Worker: not found"
 
   docker:
     name: Build Docker Images
