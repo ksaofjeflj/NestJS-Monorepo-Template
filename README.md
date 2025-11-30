@@ -181,6 +181,15 @@ Reusable services:
 - Error handling
 - Utilities
 
+### **libs/security** - Security Middleware
+Production-ready security middleware:
+- Helmet (security headers)
+- Compression (response compression)
+- Rate Limiting (API protection)
+- Request Logging (observability)
+
+See [SECURITY_MIDDLEWARE.md](./SECURITY_MIDDLEWARE.md) for details.
+
 ## 🔧 Database Configuration
 
 The template supports multiple databases. Switch easily by changing environment variables:
@@ -257,6 +266,8 @@ See [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) for detailed guide and [POR
 
 - **[Quick Start Guide](./QUICK_START.md)** - Get started in 5 minutes
 - **[Running All Apps](./RUNNING_ALL_APPS.md)** - How to run all apps simultaneously
+- **[Security Middleware](./SECURITY_MIDDLEWARE.md)** - Production-ready security middleware guide
+- **[Admin Seeding](./ADMIN_SEEDING.md)** - Admin user seeding guide
 - **[Architecture Diagrams](./ARCHITECTURE_DIAGRAM.md)** - Visual architecture diagrams
 - **[Architecture Overview](./ARCHITECTURE.md)** - Detailed architecture explanation
 - **[Database Switching Guide](./DATABASE_SWITCHING_GUIDE.md)** - How to switch databases

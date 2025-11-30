@@ -1,8 +1,10 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DbModule } from '@app/db';
+import { SecurityModule, strictRateLimit } from '@app/security';
 import { databaseConfig, appConfig, jwtConfig } from '@app/configuration';
 import { HealthModule } from './health/health.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -16,10 +18,23 @@ import { HealthModule } from './health/health.module';
     // Database
     DbModule.forRoot(),
 
+    // Security middleware (helmet, compression, logging applied automatically)
+    SecurityModule,
+
     // Feature modules
     HealthModule,
-    // Add your admin modules here (auth, users, etc.)
+    AdminModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Apply strict rate limiting to admin endpoints
+    // Admin panel should have stricter limits
+    consumer
+      .apply(strictRateLimit)
+      .forRoutes('admin/*');
+
+    // No rate limiting for health checks
+  }
+}
 

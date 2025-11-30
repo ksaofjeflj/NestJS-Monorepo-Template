@@ -44,7 +44,11 @@
         "reflect-metadata": "^0.2.2",
         "rxjs": "^7.8.1",
         "socket.io": "^4.8.1",
-        "typeorm": "^0.3.20"
+        "typeorm": "^0.3.20",
+        "helmet": "^7.1.0",
+        "compression": "^1.7.4",
+        "express-rate-limit": "^7.4.1",
+        "bcryptjs": "^2.4.3"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.4.5",
@@ -55,6 +59,8 @@
         "@types/node": "^22.19.1",
         "@types/passport-jwt": "^4.0.1",
         "@types/supertest": "^6.0.2",
+        "@types/compression": "^1.7.5",
+        "@types/bcryptjs": "^2.4.6",
         "@typescript-eslint/eslint-plugin": "^8.20.0",
         "@typescript-eslint/parser": "^8.20.0",
         "concurrently": "^9.2.1",

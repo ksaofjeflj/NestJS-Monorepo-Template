@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DbModule } from '@app/db';
+import { SecurityModule, normalRateLimit } from '@app/security';
 import { databaseConfig, appConfig, jwtConfig } from '@app/configuration';
 import { HealthModule } from './health/health.module';
 import { UsersModule } from './users/users.module';
@@ -17,10 +18,30 @@ import { UsersModule } from './users/users.module';
     // Database (automatically selects based on DB_TYPE)
     DbModule.forRoot(),
 
+    // Security middleware (helmet, compression, logging applied automatically)
+    SecurityModule,
+
     // Feature modules
     HealthModule,
     UsersModule,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Apply rate limiting selectively to specific routes
+    
+    // Strict rate limit for auth endpoints (if you add auth later)
+    // consumer
+    //   .apply(strictRateLimit)
+    //   .forRoutes('auth/login', 'auth/register', 'auth/reset-password');
+
+    // Normal rate limit for API endpoints
+    consumer
+      .apply(normalRateLimit)
+      .forRoutes('api/*');
+
+    // No rate limiting for health checks
+    // Health endpoint is excluded automatically
+  }
+}
 
