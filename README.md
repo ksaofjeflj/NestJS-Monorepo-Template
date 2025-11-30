@@ -4,6 +4,17 @@ A professional, production-ready NestJS monorepo template with flexible database
 
 ## 🏗️ Architecture
 
+### Overview
+
+This monorepo follows a **microservices architecture** where each application is independent but shares common libraries. This design allows:
+
+- ✅ **Independent Deployment** - Deploy apps separately
+- ✅ **Code Reusability** - Shared libraries prevent duplication
+- ✅ **Scalability** - Scale each service independently
+- ✅ **Flexibility** - Easy to add/remove services
+
+### Architecture Diagram
+
 ```mermaid
 flowchart TB
     subgraph Root["📦 nestjs-monorepo-template/"]
@@ -11,44 +22,132 @@ flowchart TB
         
         subgraph Apps["📱 apps/ (Independent Services)"]
             direction TB
-            API["api-server<br/>📍 Port 3001<br/>REST API • Validation"]
-            Worker["worker<br/>⚙️ Background Service<br/>Scheduled Tasks"]
-            WS["websocket-service<br/>📍 Port 3002<br/>Real-time • Socket.IO"]
-            Admin["admin<br/>📍 Port 3003<br/>Admin Panel"]
+            API["api-server<br/>📍 Port 3001<br/>REST API • Validation<br/>Swagger Docs"]
+            Worker["worker<br/>⚙️ Background Service<br/>No HTTP Server<br/>Cron Jobs • Queues"]
+            WS["websocket-service<br/>📍 Port 3002<br/>Real-time • Socket.IO<br/>Event Broadcasting"]
+            Admin["admin<br/>📍 Port 3003<br/>Admin Panel<br/>Swagger Docs"]
         end
         
         subgraph Libs["📚 libs/ (Shared Libraries)"]
             direction TB
-            DB["db/<br/>🗄️ Database Abstraction<br/>MongoDB ↔ PostgreSQL ↔ MySQL"]
-            Config["configuration/<br/>⚙️ Environment Config<br/>Type-safe • Validation"]
-            Common["common/<br/>🛠️ Utilities<br/>Logging • Errors • Filters"]
+            DB["db/<br/>🗄️ Database Abstraction<br/>MongoDB ↔ PostgreSQL ↔ MySQL<br/>Auto-switch via ENV"]
+            Config["configuration/<br/>⚙️ Environment Config<br/>Type-safe • Validation<br/>Centralized Settings"]
+            Common["common/<br/>🛠️ Utilities<br/>Logging • Errors • Filters<br/>Reusable Services"]
+            Security["security/<br/>🔒 Security Middleware<br/>Helmet • Rate Limit<br/>Compression • Logging"]
+            Swagger["swagger/<br/>📚 API Documentation<br/>OpenAPI • Interactive UI<br/>Dev & Prod Ready"]
         end
     end
 
     %% Dependencies
-    API -->|imports| DB
-    API -->|imports| Config
-    API -->|imports| Common
+    API -->|uses| DB
+    API -->|uses| Config
+    API -->|uses| Common
+    API -->|uses| Security
+    API -->|uses| Swagger
     
-    Worker -->|imports| DB
-    Worker -->|imports| Config
-    Worker -->|imports| Common
+    Worker -->|uses| DB
+    Worker -->|uses| Config
+    Worker -->|uses| Common
     
-    WS -->|imports| DB
-    WS -->|imports| Config
-    WS -->|imports| Common
+    WS -->|uses| DB
+    WS -->|uses| Config
+    WS -->|uses| Common
     
-    Admin -->|imports| DB
-    Admin -->|imports| Config
-    Admin -->|imports| Common
+    Admin -->|uses| DB
+    Admin -->|uses| Config
+    Admin -->|uses| Common
+    Admin -->|uses| Security
+    Admin -->|uses| Swagger
 
     %% Styling
     classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000,font-weight:bold
     classDef lib fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
     
     class API,Worker,WS,Admin app
-    class DB,Config,Common lib
+    class DB,Config,Common,Security,Swagger lib
 ```
+
+### Architecture Layers
+
+#### 1. **Application Layer** (`apps/`)
+Independent services that can run separately:
+
+| Application | Purpose | Port | HTTP Server |
+|------------|---------|------|-------------|
+| **api-server** | Main REST API for clients | 3001 | ✅ Yes |
+| **websocket-service** | Real-time WebSocket connections | 3002 | ✅ Yes |
+| **admin** | Admin dashboard & management | 3003 | ✅ Yes |
+| **worker** | Background jobs & scheduled tasks | N/A | ❌ No |
+
+#### 2. **Library Layer** (`libs/`)
+Shared code used across all applications:
+
+| Library | Purpose | Used By |
+|---------|---------|---------|
+| **db** | Database abstraction (MongoDB/PostgreSQL/MySQL) | All apps |
+| **configuration** | Environment-based config management | All apps |
+| **common** | Utilities, logging, error handling | All apps |
+| **security** | Security middleware (helmet, rate-limit, etc.) | API & Admin |
+| **swagger** | API documentation setup | API & Admin |
+
+### Data Flow
+
+```
+┌─────────────┐
+│   Client    │
+└──────┬──────┘
+       │ HTTP Request
+       ▼
+┌─────────────────┐     ┌──────────────┐     ┌──────────┐
+│  api-server     │────▶│  libs/db     │────▶│ Database │
+│  (Port 3001)    │     │  (Abstraction)│     │          │
+└─────────────────┘     └──────────────┘     └──────────┘
+       │
+       │ WebSocket Event
+       ▼
+┌─────────────────┐     ┌──────────────┐
+│ websocket-svc   │────▶│  libs/db     │
+│  (Port 3002)    │     │  (Read Data) │
+└─────────────────┘     └──────────────┘
+       │
+       │ Broadcast
+       ▼
+┌─────────────┐
+│   Clients   │
+└─────────────┘
+
+┌─────────────┐
+│   Worker    │────▶│  libs/db     │────▶│ Database │
+│ (Background)│     │  (Process)   │     │          │
+└─────────────┘     └──────────────┘     └──────────┘
+```
+
+### Key Design Principles
+
+1. **Separation of Concerns**
+   - Each app has a single responsibility
+   - Apps communicate via shared database or events
+   - No direct app-to-app dependencies
+
+2. **Code Reusability**
+   - Common logic lives in `libs/`
+   - Import libraries: `import { DbModule } from '@app/db'`
+   - No code duplication across apps
+
+3. **Database Abstraction**
+   - Switch databases via `DB_TYPE` environment variable
+   - No code changes needed
+   - Supports MongoDB, PostgreSQL, MySQL
+
+4. **Configuration Management**
+   - Centralized in `libs/configuration`
+   - Type-safe config objects
+   - Environment-based values
+
+5. **Security by Default**
+   - Security middleware in `libs/security`
+   - Applied automatically to HTTP servers
+   - Rate limiting, helmet, compression
 
 📊 **More Diagrams**: See [docs/ARCHITECTURE_DIAGRAM.md](./docs/ARCHITECTURE_DIAGRAM.md) for detailed architecture diagrams.
 
@@ -56,24 +155,106 @@ flowchart TB
 
 ```
 nestjs-monorepo-template/
-├── apps/                          # Applications
-│   ├── api-server/               # Main REST API server (Port 3001)
-│   ├── worker/                   # Background worker service
-│   ├── websocket-service/        # WebSocket/real-time service (Port 3002)
-│   └── admin/                    # Admin panel (Port 3003)
+├── apps/                          # 📱 Independent Applications
+│   ├── api-server/               # REST API (Port 3001)
+│   │   ├── src/
+│   │   │   ├── main.ts           # Bootstrap & Swagger setup
+│   │   │   ├── app.module.ts     # Root module
+│   │   │   ├── users/            # Feature module example
+│   │   │   └── health/           # Health check endpoint
+│   │   └── tsconfig.app.json
+│   │
+│   ├── worker/                   # Background Worker (No HTTP)
+│   │   ├── src/
+│   │   │   ├── main.ts           # Application context (no HTTP)
+│   │   │   ├── app.module.ts
+│   │   │   └── tasks/            # Scheduled tasks & cron jobs
+│   │   └── tsconfig.app.json
+│   │
+│   ├── websocket-service/        # WebSocket Service (Port 3002)
+│   │   ├── src/
+│   │   │   ├── main.ts
+│   │   │   ├── app.module.ts
+│   │   │   └── gateway/          # Socket.IO gateway
+│   │   └── tsconfig.app.json
+│   │
+│   └── admin/                     # Admin Panel (Port 3003)
+│       ├── src/
+│       │   ├── main.ts           # Bootstrap & Swagger setup
+│       │   ├── app.module.ts
+│       │   └── admin/             # Admin features
+│       └── tsconfig.app.json
 │
-├── libs/                         # Shared libraries
-│   ├── db/                       # Database abstraction layer
-│   ├── configuration/            # Configuration management
-│   └── common/                   # Common utilities & services
+├── libs/                          # 📚 Shared Libraries
+│   ├── db/                        # Database Abstraction
+│   │   ├── src/
+│   │   │   ├── db.module.ts      # Main module (auto-selects DB)
+│   │   │   ├── mongodb/          # MongoDB implementation
+│   │   │   ├── postgresql/       # PostgreSQL implementation
+│   │   │   └── mysql/            # MySQL implementation
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── configuration/             # Configuration Management
+│   │   ├── src/
+│   │   │   ├── database.config.ts # DB config
+│   │   │   ├── app.config.ts      # App config
+│   │   │   └── jwt.config.ts      # JWT config
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── common/                    # Common Utilities
+│   │   ├── src/
+│   │   │   ├── filters/          # Exception filters
+│   │   │   ├── interceptors/     # Interceptors
+│   │   │   └── services/         # Shared services
+│   │   └── tsconfig.lib.json
+│   │
+│   ├── security/                  # Security Middleware
+│   │   ├── src/
+│   │   │   ├── security.module.ts
+│   │   │   └── middleware/       # Helmet, Rate Limit, etc.
+│   │   └── tsconfig.lib.json
+│   │
+│   └── swagger/                   # Swagger/OpenAPI
+│       ├── src/
+│       │   └── swagger.config.ts  # Swagger setup function
+│       └── tsconfig.lib.json
 │
-├── package.json                  # Root package.json
-├── tsconfig.json                 # TypeScript configuration
-├── nest-cli.json                 # NestJS CLI configuration
-└── README.md                     # This file
+├── docs/                          # 📖 Documentation
+│   ├── README.md                  # Documentation index
+│   ├── ARCHITECTURE.md            # Detailed architecture
+│   ├── QUICK_START.md             # Getting started
+│   └── ...                        # More docs
+│
+├── package.json                   # Root dependencies & scripts
+├── tsconfig.json                  # Root TypeScript config
+├── nest-cli.json                  # NestJS CLI config
+├── .env.example                   # Environment variables template
+└── README.md                      # This file
 ```
 
-📊 **Visual Architecture Diagram**: See [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) for interactive diagrams.
+### How Apps Communicate
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Communication Patterns                    │
+└─────────────────────────────────────────────────────────────┘
+
+1. Client → API Server (HTTP)
+   Client → HTTP Request → api-server → Database
+
+2. API Server → WebSocket Service (Database Events)
+   Database Change → api-server → websocket-service → Clients
+
+3. Worker → Database (Scheduled Tasks)
+   Cron Job → worker → Database → Process Data
+
+4. Admin → Database (Management)
+   Admin Panel → admin → Database → View/Update Data
+
+All apps share the same database but are independent services.
+```
+
+📊 **Visual Architecture Diagram**: See [docs/ARCHITECTURE_DIAGRAM.md](./docs/ARCHITECTURE_DIAGRAM.md) for interactive diagrams.
 
 ## ✨ Features
 
@@ -242,6 +423,88 @@ npm run lint:fix               # Fix linting issues
 3. **Configure database** in `.env`
 4. **Add your business logic**
 5. **Deploy!**
+
+## 🔧 Extending the Architecture
+
+### Adding a New Application
+
+1. **Create app directory:**
+   ```bash
+   mkdir -p apps/my-new-app/src
+   ```
+
+2. **Add to `nest-cli.json`:**
+   ```json
+   {
+     "projects": {
+       "my-new-app": {
+         "type": "application",
+         "root": "apps/my-new-app",
+         "sourceRoot": "apps/my-new-app/src"
+       }
+     }
+   }
+   ```
+
+3. **Create `main.ts`:**
+   ```typescript
+   import { NestFactory } from '@nestjs/core';
+   import { AppModule } from './app.module';
+   import { setupSwagger } from '@app/swagger'; // Optional
+
+   async function bootstrap() {
+     const app = await NestFactory.create(AppModule);
+     setupSwagger(app); // Optional
+     await app.listen(3004);
+   }
+   bootstrap();
+   ```
+
+4. **Import shared libraries:**
+   ```typescript
+   import { DbModule } from '@app/db';
+   import { ConfigModule } from '@nestjs/config';
+   ```
+
+### Adding a New Shared Library
+
+1. **Create library directory:**
+   ```bash
+   mkdir -p libs/my-library/src
+   ```
+
+2. **Add to `nest-cli.json`:**
+   ```json
+   {
+     "projects": {
+       "my-library": {
+         "type": "library",
+         "root": "libs/my-library",
+         "sourceRoot": "libs/my-library/src"
+       }
+     }
+   }
+   ```
+
+3. **Export from library:**
+   ```typescript
+   // libs/my-library/src/index.ts
+   export * from './my-library.module';
+   export * from './services';
+   ```
+
+4. **Use in apps:**
+   ```typescript
+   import { MyLibraryModule } from '@app/my-library';
+   ```
+
+### Architecture Best Practices
+
+- ✅ **Keep apps independent** - No direct app-to-app dependencies
+- ✅ **Share via libraries** - Common code goes in `libs/`
+- ✅ **Use database for communication** - Apps communicate via shared DB
+- ✅ **Follow naming conventions** - Use kebab-case for directories
+- ✅ **Document your additions** - Update README and docs
 
 ## 🔌 Port Configuration
 
