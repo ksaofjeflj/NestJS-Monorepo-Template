@@ -14,6 +14,9 @@ describe('UsersController', () => {
   };
 
   beforeEach(async () => {
+    // Reset mocks before each test
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [

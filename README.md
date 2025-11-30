@@ -848,6 +848,125 @@ ADMIN_PORT=3002
 
 See [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) for detailed guide and [PORT_CONFLICT_WARNING.md](./PORT_CONFLICT_WARNING.md) for conflict prevention.
 
+## 🔄 CI/CD Pipeline
+
+This template includes a comprehensive GitHub Actions CI/CD pipeline that runs automatically on every push and pull request.
+
+### Pipeline Overview
+
+```mermaid
+flowchart LR
+    Start[Code Push/PR] --> Lint[Lint Code]
+    Start --> Test[Run Tests]
+    Start --> TypeCheck[Type Check]
+    Start --> Security[Security Audit]
+    
+    Lint --> Build{Lint Pass?}
+    Test --> Build
+    TypeCheck --> Build
+    Security --> Build
+    
+    Build -->|Yes| Docker[Build Docker]
+    Build -->|No| Fail[❌ Fail]
+    
+    Docker --> Success[✅ Success]
+    
+    style Start fill:#e3f2fd
+    style Lint fill:#fff3e0
+    style Test fill:#fff3e0
+    style TypeCheck fill:#fff3e0
+    style Security fill:#fff3e0
+    style Build fill:#f3e5f5
+    style Docker fill:#e8f5e9
+    style Success fill:#4caf50,color:#fff
+    style Fail fill:#f44336,color:#fff
+```
+
+### Pipeline Jobs
+
+| Job | Description | Runs On |
+|-----|-------------|---------|
+| **Lint** | ESLint code quality checks | Node 20 |
+| **Test** | Unit & E2E tests with coverage | Node 18 & 20 |
+| **Build** | Compile all applications | Node 20 |
+| **Docker** | Build Docker images | Node 20 (main/develop only) |
+| **Security** | npm audit for vulnerabilities | Node 20 |
+| **Type Check** | TypeScript compilation check | Node 20 |
+
+### Pipeline Flow
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant GH as GitHub
+    participant CI as CI Pipeline
+    participant Docker as Docker Registry
+    
+    Dev->>GH: Push Code / Create PR
+    GH->>CI: Trigger Pipeline
+    
+    par Parallel Jobs
+        CI->>CI: Lint Code
+        CI->>CI: Run Tests (Node 18 & 20)
+        CI->>CI: Type Check
+        CI->>CI: Security Audit
+    end
+    
+    CI->>CI: Build Applications
+    alt All Checks Pass
+        CI->>Docker: Build Docker Images (main/develop)
+        CI->>GH: ✅ Pipeline Success
+    else Checks Fail
+        CI->>GH: ❌ Pipeline Failed
+        GH->>Dev: Notify Developer
+    end
+```
+
+### CI/CD Features
+
+- ✅ **Automated Testing** - Runs on Node.js 18 & 20
+- ✅ **Code Quality** - ESLint checks on every commit
+- ✅ **Type Safety** - TypeScript compilation verification
+- ✅ **Security** - npm audit for vulnerabilities
+- ✅ **Coverage Reports** - Code coverage with Codecov integration
+- ✅ **Docker Builds** - Automatic Docker image building
+- ✅ **Multi-Node Testing** - Tests on multiple Node.js versions
+
+### Pipeline Status Badge
+
+Add this to your README to show pipeline status:
+
+```markdown
+![CI/CD Pipeline](https://github.com/your-username/nestjs-monorepo-template/workflows/CI%2FCD%20Pipeline/badge.svg)
+```
+
+### Configuration
+
+The CI/CD pipeline is configured in `.github/workflows/ci.yml`. Key features:
+
+- **Triggers**: Push to `main`/`develop` or Pull Requests
+- **Caching**: npm cache for faster builds
+- **Matrix Strategy**: Tests on multiple Node.js versions
+- **Conditional Docker**: Only builds on main/develop branches
+
+### Local Testing
+
+Test the pipeline locally before pushing:
+
+```bash
+# Run lint
+npm run lint
+
+# Run tests
+npm run test
+
+# Run type check
+npx tsc --noEmit
+
+# Run security audit
+npm audit
+```
+
 ## 📖 Documentation
 
 All documentation is organized in the [`docs/`](./docs/) folder:

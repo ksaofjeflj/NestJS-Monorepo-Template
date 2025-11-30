@@ -11,6 +11,8 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+    // Clear users array before each test for isolation
+    (service as any).users = [];
   });
 
   it('should be defined', () => {
