@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectConnection, getConnectionToken } from '@nestjs/mongoose';
 import { Connection } from 'mongoose';
-import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 /**
@@ -19,13 +17,7 @@ export class HealthService {
   private typeOrmDataSource?: DataSource;
 
   constructor(private readonly configService: ConfigService) {
-    // Try to get connections if available
-    try {
-      // MongoDB connection will be injected if available
-      // TypeORM connection will be injected if available
-    } catch (error) {
-      // Connections not available yet
-    }
+    // Connections will be set via setter methods from HealthModule
   }
 
   /**
@@ -119,7 +111,7 @@ export class HealthService {
       try {
         const mongoose = await import('mongoose');
         connection = mongoose.connection;
-      } catch (error) {
+      } catch {
         return {
           connected: false,
           responseTime: Date.now() - startTime,
@@ -184,7 +176,7 @@ export class HealthService {
     if (!dataSource) {
       // Try to get DataSource from TypeORM
       try {
-        const { DataSource } = await import('typeorm');
+        await import('typeorm');
         // Note: In a real scenario, you'd get this from the module
         // For now, we'll check if we can connect via the URI
         return {
@@ -192,7 +184,7 @@ export class HealthService {
           responseTime: Date.now() - startTime,
           error: 'TypeORM DataSource not available - connection check skipped',
         };
-      } catch (error) {
+      } catch {
         return {
           connected: false,
           responseTime: Date.now() - startTime,
