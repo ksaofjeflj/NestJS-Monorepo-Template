@@ -87,12 +87,16 @@
             "ts"
         ],
         "rootDir": ".",
-        "testRegex": ".*\\.spec\\.ts$",
+        "testRegex": ".*\\.(spec|e2e-spec)\\.ts$",
         "transform": {
             "^.+\\.(t|j)s$": "ts-jest"
         },
         "collectCoverageFrom": [
-            "**/*.(t|j)s"
+            "**/*.(t|j)s",
+            "!**/*.spec.ts",
+            "!**/*.e2e-spec.ts",
+            "!**/test/**",
+            "!**/node_modules/**"
         ],
         "coverageDirectory": "./coverage",
         "testEnvironment": "node",
@@ -102,6 +106,10 @@
         ],
         "moduleNameMapper": {
             "^@app/(.*)$": "<rootDir>/libs/$1/src"
-        }
+        },
+        "testMatch": [
+            "**/test/**/*.(spec|e2e-spec).ts",
+            "**/*.(spec|e2e-spec).ts"
+        ]
     }
 }

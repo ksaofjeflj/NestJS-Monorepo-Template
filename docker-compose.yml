@@ -1,0 +1,171 @@
+version: '3.8'
+
+services:
+  # API Server
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: nestjs-api-server
+    ports:
+      - "${API_SERVER_PORT:-3001}:3001"
+    environment:
+      - NODE_ENV=production
+      - APP_NAME=api-server
+      - API_SERVER_PORT=3001
+      - DATABASE_URI=${DATABASE_URI:-mongodb://mongodb:27017/nestjs_app}
+      - DB_TYPE=${DB_TYPE:-mongodb}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-your-refresh-secret}
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-network
+    restart: unless-stopped
+    command: ["node", "dist/apps/api-server/main.js"]
+
+  # WebSocket Service
+  websocket-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: nestjs-websocket
+    ports:
+      - "${WEBSOCKET_PORT:-3002}:3002"
+    environment:
+      - NODE_ENV=production
+      - APP_NAME=websocket-service
+      - WEBSOCKET_PORT=3002
+      - DATABASE_URI=${DATABASE_URI:-mongodb://mongodb:27017/nestjs_app}
+      - DB_TYPE=${DB_TYPE:-mongodb}
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-network
+    restart: unless-stopped
+    command: ["node", "dist/apps/websocket-service/main.js"]
+
+  # Admin Panel
+  admin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: nestjs-admin
+    ports:
+      - "${ADMIN_PORT:-3003}:3003"
+    environment:
+      - NODE_ENV=production
+      - APP_NAME=admin
+      - ADMIN_PORT=3003
+      - DATABASE_URI=${DATABASE_URI:-mongodb://mongodb:27017/nestjs_app}
+      - DB_TYPE=${DB_TYPE:-mongodb}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET:-your-refresh-secret}
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-network
+    restart: unless-stopped
+    command: ["node", "dist/apps/admin/main.js"]
+
+  # Worker Service
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: nestjs-worker
+    environment:
+      - NODE_ENV=production
+      - APP_NAME=worker
+      - DATABASE_URI=${DATABASE_URI:-mongodb://mongodb:27017/nestjs_app}
+      - DB_TYPE=${DB_TYPE:-mongodb}
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+    networks:
+      - nestjs-network
+    restart: unless-stopped
+    command: ["node", "dist/apps/worker/main.js"]
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: nestjs-mongodb
+    ports:
+      - "${MONGODB_PORT:-27017}:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME:-nestjs_app}
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - nestjs-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # PostgreSQL Database (optional - uncomment if using PostgreSQL)
+  # postgresql:
+  #   image: postgres:16-alpine
+  #   container_name: nestjs-postgresql
+  #   ports:
+  #     - "${POSTGRES_PORT:-5432}:5432"
+  #   environment:
+  #     - POSTGRES_USER=${DB_USERNAME:-postgres}
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD:-postgres}
+  #     - POSTGRES_DB=${DB_NAME:-nestjs_app}
+  #   volumes:
+  #     - postgresql_data:/var/lib/postgresql/data
+  #   networks:
+  #     - nestjs-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # MySQL Database (optional - uncomment if using MySQL)
+  # mysql:
+  #   image: mysql:8
+  #   container_name: nestjs-mysql
+  #   ports:
+  #     - "${MYSQL_PORT:-3306}:3306"
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${DB_PASSWORD:-root}
+  #     - MYSQL_DATABASE=${DB_NAME:-nestjs_app}
+  #     - MYSQL_USER=${DB_USERNAME:-nestjs}
+  #     - MYSQL_PASSWORD=${DB_PASSWORD:-nestjs}
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - nestjs-network
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+volumes:
+  mongodb_data:
+  # postgresql_data:
+  # mysql_data:
+
+networks:
+  nestjs-network:
+    driver: bridge
+

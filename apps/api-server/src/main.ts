@@ -4,8 +4,17 @@ import { ConfigService } from '@nestjs/config';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from '@app/common';
 import { setupSwagger } from '@app/swagger';
+import { validateEnvByNodeEnv } from '@app/configuration';
 
 async function bootstrap() {
+  // Validate environment variables before starting the app
+  try {
+    validateEnvByNodeEnv(process.env);
+  } catch (error) {
+    console.error(error.message);
+    process.exit(1);
+  }
+
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
