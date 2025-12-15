@@ -22,6 +22,7 @@ services:
       - .env
     depends_on:
       - mongodb
+      - redis
     networks:
       - nestjs-network
     restart: unless-stopped
@@ -98,6 +99,24 @@ services:
     restart: unless-stopped
     command: ["node", "dist/apps/worker/main.js"]
 
+  # Redis Cache (optional)
+  redis:
+    image: redis:7-alpine
+    container_name: nestjs-redis
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    command: redis-server --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+    networks:
+      - nestjs-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # MongoDB Database
   mongodb:
     image: mongo:7
@@ -162,6 +181,7 @@ services:
 
 volumes:
   mongodb_data:
+  redis_data:
   # postgresql_data:
   # mysql_data:
 

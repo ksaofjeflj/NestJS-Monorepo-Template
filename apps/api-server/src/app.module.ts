@@ -1,8 +1,10 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DbModule } from '@app/db';
 import { SecurityModule, normalRateLimit } from '@app/security';
-import { databaseConfig, appConfig, jwtConfig } from '@app/configuration';
+import { CacheModule, CacheInterceptor } from '@app/cache';
+import { databaseConfig, appConfig, jwtConfig, cacheConfig } from '@app/configuration';
 import { HealthModule } from './health/health.module';
 import { UsersModule } from './users/users.module';
 
@@ -11,12 +13,15 @@ import { UsersModule } from './users/users.module';
     // Configuration
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, appConfig, jwtConfig],
+      load: [databaseConfig, appConfig, jwtConfig, cacheConfig],
       envFilePath: ['.env.local', '.env'],
     }),
 
     // Database (automatically selects based on DB_TYPE)
     DbModule.forRoot(),
+
+    // Cache (Redis with in-memory fallback)
+    CacheModule.forRoot(),
 
     // Security middleware (helmet, compression, logging applied automatically)
     SecurityModule,
@@ -24,6 +29,13 @@ import { UsersModule } from './users/users.module';
     // Feature modules
     HealthModule,
     UsersModule,
+  ],
+  providers: [
+    // Apply cache interceptor globally
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CacheInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {

@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Connection } from 'mongoose';
 import { DataSource } from 'typeorm';
+import { CacheService } from '@app/cache';
 
 /**
  * Health Service
@@ -16,7 +17,10 @@ export class HealthService {
   private mongooseConnection?: Connection;
   private typeOrmDataSource?: DataSource;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @Optional() private readonly cacheService?: CacheService,
+  ) {
     // Connections will be set via setter methods from HealthModule
   }
 
@@ -40,6 +44,7 @@ export class HealthService {
   async getHealth() {
     const dbType = this.configService.get<string>('database.type') || 'mongodb';
     const dbStatus = await this.checkDatabase(dbType);
+    const cacheStatus = await this.checkCache();
 
     return {
       status: dbStatus.connected ? 'ok' : 'error',
@@ -52,6 +57,7 @@ export class HealthService {
         responseTime: dbStatus.responseTime,
         error: dbStatus.error,
       },
+      cache: cacheStatus,
       memory: {
         used: Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100,
         total: Math.round((process.memoryUsage().heapTotal / 1024 / 1024) * 100) / 100,
@@ -213,6 +219,65 @@ export class HealthService {
         connected: false,
         responseTime: Date.now() - startTime,
         error: error instanceof Error ? error.message : 'Database query failed',
+      };
+    }
+  }
+
+  /**
+   * Check cache connectivity
+   */
+  private async checkCache(): Promise<{
+    enabled: boolean;
+    type: 'redis' | 'memory' | 'disabled';
+    status: 'connected' | 'disconnected' | 'not-configured';
+    responseTime?: number;
+    error?: string;
+  }> {
+    const startTime = Date.now();
+    const cacheConfig = this.configService.get<{ enabled: boolean }>('cache');
+    const enabled = cacheConfig?.enabled ?? false;
+
+    if (!enabled || !this.cacheService) {
+      return {
+        enabled: false,
+        type: 'disabled',
+        status: 'not-configured',
+        responseTime: Date.now() - startTime,
+      };
+    }
+
+    try {
+      // Test cache by setting and getting a test key
+      const testKey = 'health-check-test';
+      const testValue = 'test';
+      
+      await this.cacheService.set(testKey, testValue, 1); // 1 second TTL
+      const retrieved = await this.cacheService.get(testKey);
+      await this.cacheService.del(testKey);
+
+      if (retrieved === testValue) {
+        return {
+          enabled: true,
+          type: enabled ? 'redis' : 'memory',
+          status: 'connected',
+          responseTime: Date.now() - startTime,
+        };
+      } else {
+        return {
+          enabled: true,
+          type: enabled ? 'redis' : 'memory',
+          status: 'disconnected',
+          responseTime: Date.now() - startTime,
+          error: 'Cache test failed - value mismatch',
+        };
+      }
+    } catch (error) {
+      return {
+        enabled: true,
+        type: enabled ? 'redis' : 'memory',
+        status: 'disconnected',
+        responseTime: Date.now() - startTime,
+        error: error instanceof Error ? error.message : 'Cache check failed',
       };
     }
   }
