@@ -46,10 +46,12 @@ flowchart TB
     API -->|uses| Common
     API -->|uses| Security
     API -->|uses| Swagger
+    API -->|uses| Cache
     
     Worker -->|uses| DB
     Worker -->|uses| Config
     Worker -->|uses| Common
+    Worker -->|uses| Cache
     
     WS -->|uses| DB
     WS -->|uses| Config
@@ -66,7 +68,7 @@ flowchart TB
     classDef lib fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
     
     class API,Worker,WS,Admin app
-    class DB,Config,Common,Security,Swagger lib
+    class DB,Config,Common,Security,Swagger,Cache lib
 ```
 
 ### Architecture Layers
@@ -584,10 +586,15 @@ All apps share the same database but are independent services.
 - ✅ **Monorepo Architecture** - Multiple apps, shared libraries
 - ✅ **Database Abstraction** - Easy to switch between MongoDB, PostgreSQL, MySQL
 - ✅ **TypeScript** - Full type safety
-- ✅ **Configuration Management** - Environment-based config
+- ✅ **Configuration Management** - Environment-based config with Joi validation
 - ✅ **Shared Libraries** - Reusable code across apps
 - ✅ **Best Practices** - Production-ready patterns
 - ✅ **Scalable** - Easy to add new apps/services
+- ✅ **Authentication** - JWT-based authentication with pluggable strategies
+- ✅ **Database Persistence** - Real database persistence for users (MongoDB/PostgreSQL/MySQL)
+- ✅ **Redis Caching** - Optional Redis cache layer with `@Cacheable()` decorators
+- ✅ **Distributed Locking** - Prevent race conditions in horizontally scaled workers
+- ✅ **Environment Validation** - Fail-fast Joi-based environment variable validation
 
 ## 🚀 Quick Start
 
@@ -686,6 +693,7 @@ Reusable services:
 - Logging
 - Error handling
 - Utilities
+- Distributed locking service (Redis-based with in-memory fallback)
 
 ### **libs/security** - Security Middleware
 Production-ready security middleware:

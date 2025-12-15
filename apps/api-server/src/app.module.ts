@@ -7,6 +7,7 @@ import { CacheModule, CacheInterceptor } from '@app/cache';
 import { databaseConfig, appConfig, jwtConfig, cacheConfig, getJoiValidationSchema } from '@app/configuration';
 import { HealthModule } from './health/health.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UsersModule } from './users/users.module';
     // Feature modules
     HealthModule,
     UsersModule,
+    AuthModule,
   ],
   providers: [
     // Apply cache interceptor globally
