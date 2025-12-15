@@ -1,121 +1,134 @@
 {
-    "name": "nestjs-monorepo-template",
-    "version": "1.0.0",
-    "description": "Professional NestJS monorepo template with database abstraction",
-    "private": true,
-    "scripts": {
-        "build": "nest build",
-        "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"test/**/*.ts\"",
-        "start": "nest start",
-        "start:dev": "nest start --watch",
-        "start:dev:api": "nest start api-server --watch",
-        "start:dev:worker": "nest start worker --watch",
-        "start:dev:ws": "nest start websocket-service --watch",
-        "start:dev:admin": "nest start admin --watch",
-        "start:dev:all": "concurrently \"npm run start:dev:api\" \"npm run start:dev:ws\" \"npm run start:dev:admin\" \"npm run start:dev:worker\" --names \"API,WS,ADMIN,WORKER\" --prefix-colors \"blue,green,yellow,red\"",
-        "start:debug": "nest start --debug --watch",
-        "start:prod": "node dist/apps/api-server/main",
-        "lint": "eslint \"{apps,libs}/**/*.ts\" --fix",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:cov": "jest --coverage",
-        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./test/jest-e2e.json"
+  "name": "nestjs-monorepo-template",
+  "version": "1.0.0",
+  "description": "Professional NestJS monorepo template with database abstraction",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"test/**/*.ts\"",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:dev:api": "nest start api-server --watch",
+    "start:dev:worker": "nest start worker --watch",
+    "start:dev:ws": "nest start websocket-service --watch",
+    "start:dev:admin": "nest start admin --watch",
+    "start:dev:all": "concurrently \"npm run start:dev:api\" \"npm run start:dev:ws\" \"npm run start:dev:admin\" \"npm run start:dev:worker\" --names \"API,WS,ADMIN,WORKER\" --prefix-colors \"blue,green,yellow,red\"",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/apps/api-server/main",
+    "lint": "eslint \"{apps,libs}/**/*.ts\" --fix",
+    "lint:check": "eslint \"{apps,libs}/**/*.ts\"",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@nestjs/cache-manager": "^3.0.1",
+    "@nestjs/common": "^10.4.4",
+    "@nestjs/config": "^3.2.3",
+    "@nestjs/core": "^10.4.4",
+    "@nestjs/jwt": "^10.2.0",
+    "@nestjs/mongoose": "^10.0.2",
+    "@nestjs/passport": "^10.0.3",
+    "@nestjs/platform-express": "^10.4.4",
+    "@nestjs/platform-socket.io": "^10.4.4",
+    "@nestjs/schedule": "^4.0.0",
+    "@nestjs/swagger": "^7.4.2",
+    "@nestjs/typeorm": "^10.0.2",
+    "@nestjs/websockets": "^10.4.4",
+    "@types/cache-manager": "^4.0.6",
+    "@types/joi": "^17.2.2",
+    "bcryptjs": "^2.4.3",
+    "cache-manager": "^7.2.7",
+    "cache-manager-redis-store": "^3.0.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.2",
+    "compression": "^1.7.4",
+    "express-rate-limit": "^7.4.1",
+    "helmet": "^7.1.0",
+    "joi": "^18.0.2",
+    "mongoose": "^8.20.0",
+    "mysql2": "^3.11.5",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.13.1",
+    "redis": "^5.10.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "socket.io": "^4.8.1",
+    "swagger-ui-express": "^5.0.1",
+    "typeorm": "^0.3.20"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@nestjs/cli": "^10.4.5",
+    "@nestjs/schematics": "^10.1.1",
+    "@nestjs/testing": "^10.4.4",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/compression": "^1.7.5",
+    "@types/express": "^5.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^22.19.1",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/supertest": "^6.0.2",
+    "@types/swagger-ui-express": "^4.1.6",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.2",
+    "husky": "^9.1.7",
+    "jest": "^30.0.0",
+    "lint-staged": "^16.2.7",
+    "prettier": "^3.4.2",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-loader": "^9.5.2",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.20.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testMatch": [
+      "**/test/**/*.(spec|e2e-spec).ts",
+      "**/*.(spec|e2e-spec).ts"
+    ],
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
     },
-    "dependencies": {
-        "@nestjs/cache-manager": "^3.0.1",
-        "@nestjs/common": "^10.4.4",
-        "@nestjs/config": "^3.2.3",
-        "@nestjs/core": "^10.4.4",
-        "@nestjs/jwt": "^10.2.0",
-        "@nestjs/mongoose": "^10.0.2",
-        "@nestjs/passport": "^10.0.3",
-        "@nestjs/platform-express": "^10.4.4",
-        "@nestjs/platform-socket.io": "^10.4.4",
-        "@nestjs/schedule": "^4.0.0",
-        "@nestjs/swagger": "^7.4.2",
-        "@nestjs/typeorm": "^10.0.2",
-        "@nestjs/websockets": "^10.4.4",
-        "@types/cache-manager": "^4.0.6",
-        "@types/joi": "^17.2.2",
-        "bcryptjs": "^2.4.3",
-        "cache-manager": "^7.2.7",
-        "cache-manager-redis-store": "^3.0.1",
-        "class-transformer": "^0.5.1",
-        "class-validator": "^0.14.2",
-        "compression": "^1.7.4",
-        "express-rate-limit": "^7.4.1",
-        "helmet": "^7.1.0",
-        "joi": "^18.0.2",
-        "mongoose": "^8.20.0",
-        "mysql2": "^3.11.5",
-        "passport": "^0.7.0",
-        "passport-jwt": "^4.0.1",
-        "pg": "^8.13.1",
-        "redis": "^5.10.0",
-        "reflect-metadata": "^0.2.2",
-        "rxjs": "^7.8.1",
-        "socket.io": "^4.8.1",
-        "swagger-ui-express": "^5.0.1",
-        "typeorm": "^0.3.20"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.18.0",
-        "@nestjs/cli": "^10.4.5",
-        "@nestjs/schematics": "^10.1.1",
-        "@nestjs/testing": "^10.4.4",
-        "@types/bcryptjs": "^2.4.6",
-        "@types/compression": "^1.7.5",
-        "@types/express": "^5.0.0",
-        "@types/jest": "^30.0.0",
-        "@types/node": "^22.19.1",
-        "@types/passport-jwt": "^4.0.1",
-        "@types/supertest": "^6.0.2",
-        "@types/swagger-ui-express": "^4.1.6",
-        "concurrently": "^9.2.1",
-        "eslint": "^9.18.0",
-        "eslint-config-prettier": "^10.0.1",
-        "eslint-plugin-prettier": "^5.2.2",
-        "jest": "^30.0.0",
-        "prettier": "^3.4.2",
-        "source-map-support": "^0.5.21",
-        "supertest": "^7.0.0",
-        "ts-jest": "^29.2.5",
-        "ts-loader": "^9.5.2",
-        "ts-node": "^10.9.2",
-        "tsconfig-paths": "^4.2.0",
-        "typescript": "^5.7.3",
-        "typescript-eslint": "^8.20.0"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": ".",
-        "testMatch": [
-            "**/test/**/*.(spec|e2e-spec).ts",
-            "**/*.(spec|e2e-spec).ts"
-        ],
-        "transform": {
-            "^.+\\.(t|j)s$": "ts-jest"
-        },
-        "collectCoverageFrom": [
-            "**/*.(t|j)s",
-            "!**/*.spec.ts",
-            "!**/*.e2e-spec.ts",
-            "!**/test/**",
-            "!**/node_modules/**"
-        ],
-        "coverageDirectory": "./coverage",
-        "testEnvironment": "node",
-        "roots": [
-            "<rootDir>/apps/",
-            "<rootDir>/libs/"
-        ],
-        "moduleNameMapper": {
-            "^@app/(.*)$": "<rootDir>/libs/$1/src"
-        }
+    "collectCoverageFrom": [
+      "**/*.(t|j)s",
+      "!**/*.spec.ts",
+      "!**/*.e2e-spec.ts",
+      "!**/test/**",
+      "!**/node_modules/**"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ],
+    "moduleNameMapper": {
+      "^@app/(.*)$": "<rootDir>/libs/$1/src"
     }
+  }
 }
