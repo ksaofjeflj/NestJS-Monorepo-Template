@@ -4,17 +4,23 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { DbModule } from '@app/db';
 import { SecurityModule, normalRateLimit } from '@app/security';
 import { CacheModule, CacheInterceptor } from '@app/cache';
-import { databaseConfig, appConfig, jwtConfig, cacheConfig } from '@app/configuration';
+import { databaseConfig, appConfig, jwtConfig, cacheConfig, getJoiValidationSchema } from '@app/configuration';
 import { HealthModule } from './health/health.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
-    // Configuration
+    // Configuration with Joi validation (fail-fast)
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig, jwtConfig, cacheConfig],
       envFilePath: ['.env.local', '.env'],
+      validationSchema: getJoiValidationSchema(),
+      validationOptions: {
+        abortEarly: false, // Show all validation errors
+        allowUnknown: true, // Allow unknown env vars
+        stripUnknown: false, // Keep unknown vars
+      },
     }),
 
     // Database (automatically selects based on DB_TYPE)

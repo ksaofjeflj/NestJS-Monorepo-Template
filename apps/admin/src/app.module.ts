@@ -2,17 +2,23 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DbModule } from '@app/db';
 import { SecurityModule, strictRateLimit } from '@app/security';
-import { databaseConfig, appConfig, jwtConfig } from '@app/configuration';
+import { databaseConfig, appConfig, jwtConfig, getJoiValidationSchema } from '@app/configuration';
 import { HealthModule } from './health/health.module';
 import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
-    // Configuration
+    // Configuration with Joi validation (fail-fast)
     ConfigModule.forRoot({
       isGlobal: true,
       load: [databaseConfig, appConfig, jwtConfig],
       envFilePath: ['.env.local', '.env'],
+      validationSchema: getJoiValidationSchema(),
+      validationOptions: {
+        abortEarly: false,
+        allowUnknown: true,
+        stripUnknown: false,
+      },
     }),
 
     // Database
