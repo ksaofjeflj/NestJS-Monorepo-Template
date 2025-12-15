@@ -21,7 +21,7 @@ This monorepo follows a **microservices architecture** where each application is
 flowchart TB
     subgraph Root["📦 nestjs-monorepo-template/"]
         direction TB
-        
+
         subgraph Apps["📱 apps/ (Independent Services)"]
             direction TB
             API["api-server<br/>📍 Port 3001<br/>REST API • Validation<br/>Swagger Docs"]
@@ -29,7 +29,7 @@ flowchart TB
             WS["websocket-service<br/>📍 Port 3002<br/>Real-time • Socket.IO<br/>Event Broadcasting"]
             Admin["admin<br/>📍 Port 3003<br/>Admin Panel<br/>Swagger Docs"]
         end
-        
+
         subgraph Libs["📚 libs/ (Shared Libraries)"]
             direction TB
             DB["db/<br/>🗄️ Database Abstraction<br/>MongoDB ↔ PostgreSQL ↔ MySQL<br/>Auto-switch via ENV"]
@@ -47,16 +47,16 @@ flowchart TB
     API -->|uses| Security
     API -->|uses| Swagger
     API -->|uses| Cache
-    
+
     Worker -->|uses| DB
     Worker -->|uses| Config
     Worker -->|uses| Common
     Worker -->|uses| Cache
-    
+
     WS -->|uses| DB
     WS -->|uses| Config
     WS -->|uses| Common
-    
+
     Admin -->|uses| DB
     Admin -->|uses| Config
     Admin -->|uses| Common
@@ -66,7 +66,7 @@ flowchart TB
     %% Styling
     classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000,font-weight:bold
     classDef lib fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
-    
+
     class API,Worker,WS,Admin app
     class DB,Config,Common,Security,Swagger,Cache lib
 ```
@@ -74,26 +74,27 @@ flowchart TB
 ### Architecture Layers
 
 #### 1. **Application Layer** (`apps/`)
+
 Independent services that can run separately:
 
-| Application | Purpose | Port | HTTP Server |
-|------------|---------|------|-------------|
-| **api-server** | Main REST API for clients | 3001 | ✅ Yes |
-| **websocket-service** | Real-time WebSocket connections | 3002 | ✅ Yes |
-| **admin** | Admin dashboard & management | 3003 | ✅ Yes |
-| **worker** | Background jobs & scheduled tasks | N/A | ❌ No |
+| Application           | Purpose                           | Port | HTTP Server |
+| --------------------- | --------------------------------- | ---- | ----------- |
+| **api-server**        | Main REST API for clients         | 3001 | ✅ Yes      |
+| **websocket-service** | Real-time WebSocket connections   | 3002 | ✅ Yes      |
+| **admin**             | Admin dashboard & management      | 3003 | ✅ Yes      |
+| **worker**            | Background jobs & scheduled tasks | N/A  | ❌ No       |
 
 #### 2. **Library Layer** (`libs/`)
+
 Shared code used across all applications:
 
-| Library | Purpose | Used By |
-|---------|---------|---------|
-| **db** | Database abstraction (MongoDB/PostgreSQL/MySQL) | All apps |
-| **configuration** | Environment-based config management | All apps |
-| **common** | Utilities, logging, error handling | All apps |
-| **security** | Security middleware (helmet, rate-limit, etc.) | API & Admin |
-| **swagger** | API documentation setup | API & Admin |
-
+| Library           | Purpose                                         | Used By     |
+| ----------------- | ----------------------------------------------- | ----------- |
+| **db**            | Database abstraction (MongoDB/PostgreSQL/MySQL) | All apps    |
+| **configuration** | Environment-based config management             | All apps    |
+| **common**        | Utilities, logging, error handling              | All apps    |
+| **security**      | Security middleware (helmet, rate-limit, etc.)  | API & Admin |
+| **swagger**       | API documentation setup                         | API & Admin |
 
 # Architecture Diagram
 
@@ -105,7 +106,7 @@ Visual representation of the NestJS Monorepo Template architecture.
 flowchart TB
     subgraph Root["📦 nestjs-monorepo-template/"]
         direction TB
-        
+
         subgraph Apps["📱 apps/ (Independent Services)"]
             direction TB
             API["api-server<br/>📍 Port 3001<br/>REST API • Validation • Health"]
@@ -113,14 +114,14 @@ flowchart TB
             WS["websocket-service<br/>📍 Port 3002<br/>Real-time • Socket.IO"]
             Admin["admin<br/>📍 Port 3003<br/>Admin Panel • Management"]
         end
-        
+
         subgraph Libs["📚 libs/ (Shared Reusable Code)"]
             direction TB
             DB["db/<br/>🗄️ Database Abstraction<br/>MongoDB ↔ PostgreSQL ↔ MySQL"]
             Config["configuration/<br/>⚙️ Environment Config<br/>Type-safe • Validation"]
             Common["common/<br/>🛠️ Utilities<br/>Logging • Errors • Filters"]
         end
-        
+
         RootFiles["📄 Root Files<br/>package.json • tsconfig.json<br/>nest-cli.json • .env"]
     end
 
@@ -128,15 +129,15 @@ flowchart TB
     API -->|imports| DB
     API -->|imports| Config
     API -->|imports| Common
-    
+
     Worker -->|imports| DB
     Worker -->|imports| Config
     Worker -->|imports| Common
-    
+
     WS -->|imports| DB
     WS -->|imports| Config
     WS -->|imports| Common
-    
+
     Admin -->|imports| DB
     Admin -->|imports| Config
     Admin -->|imports| Common
@@ -145,7 +146,7 @@ flowchart TB
     classDef app fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000,font-weight:bold
     classDef lib fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000,font-weight:bold
     classDef root fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
-    
+
     class API,Worker,WS,Admin app
     class DB,Config,Common lib
     class RootFiles root
@@ -160,33 +161,33 @@ flowchart LR
         Mobile["Mobile App"]
         AdminUI["Admin UI"]
     end
-    
+
     subgraph Services["🚀 Services"]
         API["api-server<br/>:3001"]
         WS["websocket-service<br/>:3002"]
         Admin["admin<br/>:3003"]
     end
-    
+
     subgraph Worker["⚙️ Background"]
         WorkerService["worker<br/>(No Port)"]
     end
-    
+
     subgraph Database["💾 Database"]
         MongoDB["MongoDB"]
         PostgreSQL["PostgreSQL"]
         MySQL["MySQL"]
     end
-    
+
     Browser -->|HTTP/REST| API
     Mobile -->|HTTP/REST| API
     Browser -->|WebSocket| WS
     AdminUI -->|HTTP/REST| Admin
-    
+
     API -->|Read/Write| Database
     WS -->|Read/Write| Database
     Admin -->|Read/Write| Database
     WorkerService -->|Read/Write| Database
-    
+
     API -.->|Events| WS
     WorkerService -.->|Process| API
 ```
@@ -201,32 +202,32 @@ graph TD
         WS[websocket-service]
         AD[admin]
     end
-    
+
     subgraph Libraries["Shared Libraries"]
         DB[db<br/>Database Abstraction]
         CFG[configuration<br/>Config Management]
         COM[common<br/>Utilities]
     end
-    
+
     A --> DB
     A --> CFG
     A --> COM
-    
+
     W --> DB
     W --> CFG
     W --> COM
-    
+
     WS --> DB
     WS --> CFG
     WS --> COM
-    
+
     AD --> DB
     AD --> CFG
     AD --> COM
-    
+
     classDef app fill:#2563eb,color:white,stroke:#1e40af,stroke-width:2px
     classDef lib fill:#7c3aed,color:white,stroke:#6d28d9,stroke-width:2px
-    
+
     class A,W,WS,AD app
     class DB,CFG,COM lib
 ```
@@ -241,36 +242,36 @@ flowchart TB
         Admin[admin]
         Worker[worker]
     end
-    
+
     subgraph DBModule["libs/db Module"]
         Factory[DatabaseFactory]
         MongoModule[MongooseModule]
         TypeORMModule[TypeORMModule]
     end
-    
+
     subgraph Databases["Databases"]
         MongoDB[(MongoDB)]
         PostgreSQL[(PostgreSQL)]
         MySQL[(MySQL)]
     end
-    
+
     API --> Factory
     WS --> Factory
     Admin --> Factory
     Worker --> Factory
-    
+
     Factory -->|DB_TYPE=mongodb| MongoModule
     Factory -->|DB_TYPE=postgresql| TypeORMModule
     Factory -->|DB_TYPE=mysql| TypeORMModule
-    
+
     MongoModule --> MongoDB
     TypeORMModule --> PostgreSQL
     TypeORMModule --> MySQL
-    
+
     classDef app fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
     classDef db fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
     classDef database fill:#059669,color:#fff,stroke:#047857,stroke-width:2px
-    
+
     class API,WS,Admin,Worker app
     class Factory,MongoModule,TypeORMModule db
     class MongoDB,PostgreSQL,MySQL database
@@ -284,46 +285,46 @@ flowchart TB
         subgraph LoadBalancer["Load Balancer"]
             LB[NGINX/Cloud Load Balancer]
         end
-        
+
         subgraph APIInstances["API Server Instances"]
             API1[api-server:3001<br/>Instance 1]
             API2[api-server:3001<br/>Instance 2]
             API3[api-server:3001<br/>Instance 3]
         end
-        
+
         subgraph OtherServices["Other Services"]
             WS[websocket-service:3002]
             Admin[admin:3003]
             Worker[worker<br/>Background]
         end
-        
+
         subgraph Database["Database Cluster"]
             Primary[(Primary DB)]
             Replica1[(Replica 1)]
             Replica2[(Replica 2)]
         end
-        
+
         LB --> API1
         LB --> API2
         LB --> API3
-        
+
         API1 --> Primary
         API2 --> Primary
         API3 --> Primary
-        
+
         WS --> Replica1
         Admin --> Replica2
         Worker --> Primary
-        
+
         Primary -.->|Replication| Replica1
         Primary -.->|Replication| Replica2
     end
-    
+
     classDef lb fill:#4caf50,color:white,stroke:#2e7d32,stroke-width:2px
     classDef api fill:#2196f3,color:white,stroke:#1565c0,stroke-width:2px
     classDef service fill:#9c27b0,color:white,stroke:#6a1b9a,stroke-width:2px
     classDef db fill:#ff9800,color:white,stroke:#e65100,stroke-width:2px
-    
+
     class LB lb
     class API1,API2,API3 api
     class WS,Admin,Worker service
@@ -340,20 +341,20 @@ flowchart LR
         P3003["Port 3003<br/>admin"]
         PNone["No Port<br/>worker"]
     end
-    
+
     subgraph Env["Environment Variables"]
         API_PORT["API_SERVER_PORT=3001"]
         WS_PORT["WEBSOCKET_PORT=3002"]
         ADMIN_PORT["ADMIN_PORT=3003"]
     end
-    
+
     API_PORT --> P3001
     WS_PORT --> P3002
     ADMIN_PORT --> P3003
-    
+
     classDef port fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
     classDef env fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
-    
+
     class P3001,P3002,P3003,PNone port
     class API_PORT,WS_PORT,ADMIN_PORT env
 ```
@@ -363,27 +364,27 @@ flowchart LR
 ```mermaid
 flowchart TD
     ENV[.env file] --> ConfigModule[ConfigModule]
-    
+
     ConfigModule --> DBConfig[database.config.ts]
     ConfigModule --> AppConfig[app.config.ts]
     ConfigModule --> JWTConfig[jwt.config.ts]
-    
+
     DBConfig --> DBType{DB_TYPE?}
     DBType -->|mongodb| MongoDB[MongoDB Connection]
     DBType -->|postgresql| PostgreSQL[PostgreSQL Connection]
     DBType -->|mysql| MySQL[MySQL Connection]
-    
+
     AppConfig --> PortConfig[Port Configuration]
     AppConfig --> CORSConfig[CORS Configuration]
-    
+
     JWTConfig --> JWTSecret[JWT Secret]
     JWTConfig --> JWTExpiry[JWT Expiry]
-    
+
     classDef env fill:#f59e0b,color:#fff,stroke:#d97706,stroke-width:2px
     classDef config fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
     classDef db fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
     classDef connection fill:#059669,color:#fff,stroke:#047857,stroke-width:2px
-    
+
     class ENV env
     class ConfigModule,DBConfig,AppConfig,JWTConfig config
     class PortConfig,CORSConfig,JWTSecret,JWTExpiry db
@@ -410,10 +411,6 @@ flowchart TD
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - Detailed architecture explanation
 - [README.md](./README.md) - Main documentation
 - [PORT_CONFIGURATION.md](./PORT_CONFIGURATION.md) - Port setup guide
-
-
-
-
 
 ### Data Flow
 
@@ -595,6 +592,7 @@ All apps share the same database but are independent services.
 - ✅ **Redis Caching** - Optional Redis cache layer with `@Cacheable()` decorators
 - ✅ **Distributed Locking** - Prevent race conditions in horizontally scaled workers
 - ✅ **Environment Validation** - Fail-fast Joi-based environment variable validation
+- ✅ **Git Hooks** - Husky pre-commit hooks with lint-staged for code quality
 
 ## 🚀 Quick Start
 
@@ -627,11 +625,13 @@ npm run start:dev admin           # Port 3002
 ## 📦 Applications
 
 ### **api-server**
+
 Main REST API server for handling HTTP requests.
 
 **Port:** 3001 (configurable via `API_SERVER_PORT`)
 
 **Features:**
+
 - REST API endpoints
 - Swagger/OpenAPI documentation (`/api-docs`)
 - Authentication/Authorization
@@ -639,11 +639,13 @@ Main REST API server for handling HTTP requests.
 - Error handling
 
 ### **worker**
+
 Background worker for processing jobs, queues, etc.
 
 **Port:** N/A (no HTTP server - runs in background)
 
 **Features:**
+
 - Scheduled tasks (cron jobs)
 - Queue processing
 - Background jobs
@@ -653,21 +655,25 @@ Background worker for processing jobs, queues, etc.
 See [docs/WORKER_EXAMPLES.md](./docs/WORKER_EXAMPLES.md) for detailed examples.
 
 ### **websocket-service**
+
 Real-time WebSocket service for live updates.
 
 **Port:** 3001 (configurable via `WEBSOCKET_PORT`)
 
 **Features:**
+
 - WebSocket connections
 - Real-time events
 - Room-based broadcasting
 
 ### **admin**
+
 Admin panel for managing the application.
 
 **Port:** 3003 (configurable via `ADMIN_PORT`)
 
 **Features:**
+
 - Admin dashboard
 - Swagger/OpenAPI documentation
 - User management
@@ -677,26 +683,34 @@ Admin panel for managing the application.
 ## 📚 Shared Libraries
 
 ### **libs/db** - Database Abstraction
+
 Switch between databases easily:
+
 - MongoDB (Mongoose)
 - PostgreSQL (TypeORM)
 - MySQL (TypeORM)
 
 ### **libs/configuration** - Config Management
+
 Centralized configuration:
+
 - Environment variables
 - Type-safe config
 - Validation
 
 ### **libs/common** - Common Utilities
+
 Reusable services:
+
 - Logging
 - Error handling
 - Utilities
 - Distributed locking service (Redis-based with in-memory fallback)
 
 ### **libs/security** - Security Middleware
+
 Production-ready security middleware:
+
 - Helmet (security headers)
 - Compression (response compression)
 - Rate Limiting (API protection)
@@ -743,8 +757,13 @@ npm run test:watch             # Watch mode
 npm run test:cov               # Coverage
 
 # Lint
-npm run lint                   # Lint all code
+npm run lint                   # Lint all code (with auto-fix)
+npm run lint:check             # Lint all code (check only, no fix)
 npm run lint:fix               # Fix linting issues
+
+# Git Hooks (Husky)
+# Pre-commit hooks automatically run lint-staged on staged files
+# This ensures code quality before commits
 ```
 
 ## 🎯 Usage
@@ -760,11 +779,13 @@ npm run lint:fix               # Fix linting issues
 ### Adding a New Application
 
 1. **Create app directory:**
+
    ```bash
    mkdir -p apps/my-new-app/src
    ```
 
 2. **Add to `nest-cli.json`:**
+
    ```json
    {
      "projects": {
@@ -778,6 +799,7 @@ npm run lint:fix               # Fix linting issues
    ```
 
 3. **Create `main.ts`:**
+
    ```typescript
    import { NestFactory } from '@nestjs/core';
    import { AppModule } from './app.module';
@@ -800,11 +822,13 @@ npm run lint:fix               # Fix linting issues
 ### Adding a New Shared Library
 
 1. **Create library directory:**
+
    ```bash
    mkdir -p libs/my-library/src
    ```
 
 2. **Add to `nest-cli.json`:**
+
    ```json
    {
      "projects": {
@@ -818,6 +842,7 @@ npm run lint:fix               # Fix linting issues
    ```
 
 3. **Export from library:**
+
    ```typescript
    // libs/my-library/src/index.ts
    export * from './my-library.module';
@@ -841,15 +866,16 @@ npm run lint:fix               # Fix linting issues
 
 Each app runs on its own port:
 
-| App | Default Port | Environment Variable |
-|-----|-------------|---------------------|
-| api-server | 3001 | `API_SERVER_PORT` |
-| websocket-service | 3002 | `WEBSOCKET_PORT` |
-| admin | 3003 | `ADMIN_PORT` |
+| App               | Default Port | Environment Variable |
+| ----------------- | ------------ | -------------------- |
+| api-server        | 3001         | `API_SERVER_PORT`    |
+| websocket-service | 3002         | `WEBSOCKET_PORT`     |
+| admin             | 3003         | `ADMIN_PORT`         |
 
 **⚠️ Important:** If you set `PORT=5001` for all apps, you'll get port conflicts! Always use app-specific ports.
 
 **Recommended `.env` setup:**
+
 ```env
 API_SERVER_PORT=3000
 WEBSOCKET_PORT=3001
@@ -870,25 +896,25 @@ flowchart LR
     Start --> Test[Run Tests]
     Start --> TypeCheck[Type Check]
     Start --> Security[Security Audit]
-    
+
     Lint --> Build{All Pass?}
     Test --> Build
     TypeCheck --> Build
     Security --> Build
-    
+
     Build -->|Yes| Docker[Build & Push Docker]
     Build -->|No| Fail[❌ Fail]
-    
+
     Docker --> GHCR[Push to GHCR]
     GHCR --> Success[✅ Success]
-    
+
     classDef trigger fill:#2563eb,color:#fff,stroke:#1e40af,stroke-width:2px
     classDef check fill:#7c3aed,color:#fff,stroke:#6d28d9,stroke-width:2px
     classDef build fill:#059669,color:#fff,stroke:#047857,stroke-width:2px
     classDef registry fill:#f59e0b,color:#fff,stroke:#d97706,stroke-width:2px
     classDef success fill:#10b981,color:#fff,stroke:#059669,stroke-width:2px
     classDef fail fill:#ef4444,color:#fff,stroke:#dc2626,stroke-width:2px
-    
+
     class Start trigger
     class Lint,Test,TypeCheck,Security check
     class Build,Docker build
@@ -899,14 +925,14 @@ flowchart LR
 
 ### Pipeline Jobs
 
-| Job | Description | Runs On |
-|-----|-------------|---------|
-| **Lint** | ESLint code quality checks | Node 20 |
-| **Test** | Unit & E2E tests with coverage | Node 18 & 20 |
-| **Build** | Compile all applications | Node 20 |
-| **Docker** | Build & push Docker images to GHCR | Node 20 (main/develop only) |
-| **Security** | npm audit for vulnerabilities | Node 20 |
-| **Type Check** | TypeScript compilation check | Node 20 |
+| Job            | Description                        | Runs On                     |
+| -------------- | ---------------------------------- | --------------------------- |
+| **Lint**       | ESLint code quality checks         | Node 20                     |
+| **Test**       | Unit & E2E tests with coverage     | Node 18 & 20                |
+| **Build**      | Compile all applications           | Node 20                     |
+| **Docker**     | Build & push Docker images to GHCR | Node 20 (main/develop only) |
+| **Security**   | npm audit for vulnerabilities      | Node 20                     |
+| **Type Check** | TypeScript compilation check       | Node 20                     |
 
 ### Pipeline Flow
 
@@ -916,17 +942,17 @@ sequenceDiagram
     participant GH as GitHub
     participant CI as CI Pipeline
     participant GHCR as GitHub Container Registry
-    
+
     Dev->>GH: Push Code / Create PR
     GH->>CI: Trigger Pipeline
-    
+
     par Parallel Jobs
         CI->>CI: Lint Code
         CI->>CI: Run Tests (Node 18 & 20)
         CI->>CI: Type Check
         CI->>CI: Security Audit
     end
-    
+
     CI->>CI: Build Applications
     alt All Checks Pass
         CI->>CI: Build Docker Image
@@ -951,9 +977,6 @@ sequenceDiagram
 - ✅ **Multi-Node Testing** - Tests on multiple Node.js versions
 
 ### Pipeline Status Badge
-
-
-
 
 ```markdown
 ![CI/CD Pipeline](https://github.com/sagarregmi2056/nestjs-monorepo-template/workflows/CI%2FCD%20Pipeline/badge.svg)
@@ -1020,4 +1043,3 @@ See `.env.example` for all required environment variables.
 ## 📄 License
 
 MIT
-
